@@ -1,14 +1,33 @@
 <template>
   <div class="pageWrapper">
-    <div class="closeBtn">
-      <span class="iconfont iconicon-test"></span>
-    </div>
+    <closeBtn @click="clickhandler"></closeBtn>
     <div class="logoWrapper">
       <span class="iconfont iconnew"></span>
     </div>
-    <AnthInput type="text" placeholder="账号" :rule="/^\d{6,}$/" error_msg="请输入正确的手机号" />
-    <AnthInput type="text" placeholder="昵称" :rule="/^\w{6,}$/" error_msg="请输入正确的昵称" />
-    <AnthInput type="password" placeholder="密码" :rule="/^\d{6,}$/" error_msg="请输入正确的密码" />
+    <AnthInput
+      type="text"
+      placeholder="账号"
+      :rule="/^\d{11}$/"
+      error_msg="请输入正确的手机号"
+      @valChange="setUsername"
+    />
+
+    <AnthInput
+      type="text"
+      placeholder="昵称"
+      :rule="/^[\u4E00-\u9FA5]{2,6}$/"
+      error_msg="请输入正确的昵称"
+      @valChange="setNickname"
+    />
+
+    <AnthInput
+      type="password"
+      placeholder="密码"
+      :rule="/^\d{6,}$/"
+      error_msg="请输入正确的密码"
+      @valChange="setPassword"
+    />
+
     <AnthBtn commit="马上注册" @commit="registerhandler"></AnthBtn>
   </div>
 </template>
@@ -16,15 +35,48 @@
 <script>
 import AnthInput from "../components/AnthInput";
 import AnthBtn from "../components/AnthBtn";
+import closeBtn from "../components/closeBtn";
 
 export default {
+  data() {
+    return {
+      username: "",
+      password: "",
+      nickname: "",
+    };
+  },
   components: {
     AnthInput,
     AnthBtn,
+    closeBtn,
   },
   methods: {
+    setUsername(username) {
+      this.username = username;
+    },
+    setNickname(nickname) {
+      this.nickname = nickname;
+    },
+    setPassword(password) {
+      this.password = password;
+    },
     registerhandler() {
-      console.log("registerhandler");
+      this.$axios({
+        url: "http://localhost:3000/register",
+        method: "post",
+        data: {
+          username: this.username,
+          nickname: this.nickname,
+          password: this.password,
+        },
+      }).then((response) => {
+        if (response.request.readyState === 4 && response.status === 200) {
+          this.$toast(response.data.message);
+        }
+      });
+    },
+    clickhandler() {
+      this.$router.push("/home");
     },
   },
 };

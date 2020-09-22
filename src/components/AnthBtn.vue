@@ -10,7 +10,6 @@ export default {
   props: ["commit"],
   methods: {
     clickhandler() {
-      console.log(1);
       this.$emit("commit");
     },
   },

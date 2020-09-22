@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import axios from './axios'
 
 Vue.config.productionTip = false
 
@@ -10,13 +11,9 @@ import Vant from "vant"
 import "vant/lib/index.css"
 Vue.use(Vant)
 
-// 引入ajax请求库axios库,并挂载到原型上,这样相当于全局注册
-import axios from "axios"
-Vue.prototype.$axios = axios
-
-
 new Vue({
   el: "#app",
   router,
+  axios,
   render: function (h) { return h(App) }
 })

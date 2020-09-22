@@ -21,6 +21,10 @@ export default {
   props: ["type", "placeholder", "rule", "error_msg"],
   watch: {
     val() {
+      //子组件输入框内容改变的时候把value值传给父组件
+      //因为每次检测数据改变都要及时通知父组件,所以要放在最前面
+      this.$emit("valChange", this.val);
+
       // 在输入框为空的时候,不显示错误提示
       if (!this.val.trim()) {
         this.isValid = true;
@@ -33,9 +37,6 @@ export default {
       } else {
         this.isValid = false;
       }
-
-      //子组件输入框内容改变的时候把value值传给父组件
-      this.$emit("valChange", this.val);
     },
   },
   methods: {
