@@ -6,7 +6,7 @@
     </div>
     <AnthInput
       type="text"
-      placeholder="账号"
+      placeholder="账号/手机号"
       :rule="/^\d{11}$/"
       error_msg="请输入正确的手机号"
       @valChange="setUsername"
@@ -61,6 +61,25 @@ export default {
       this.password = password;
     },
     registerhandler() {
+      if (this.username === "") {
+        this.$toast.fail("账号/手机号不能为空");
+        return;
+      }
+
+      if (!/^\d{11}$/.test(this.username)) {
+        this.$toast.fail("请输入正确的手机号");
+        return;
+      }
+
+      if (this.nickname === "") {
+        this.$toast.fail("昵称不能为空");
+        return;
+      }
+      if (this.password === "") {
+        this.$toast.fail("密码不能为空");
+        return;
+      }
+
       this.$axios({
         url: "/register",
         method: "post",

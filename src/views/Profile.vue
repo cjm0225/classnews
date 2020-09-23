@@ -1,32 +1,49 @@
 <template>
   <div>
     <TopNav title="编辑资料"></TopNav>
-    <div class="avatar" v-if="userInfo.head_img">
+    <div class="avatar">
       <label>
         <van-uploader style="display:none" :max-count="1" :after-read="afterRead" />
-        <van-image
-          round
-          fit="cover"
-          :src="$axios.defaults.baseURL +  userInfo.head_img"
-          width="20vw"
-          height="20vw"
-        />
+        <div v-if="userInfo.head_img">
+          <van-image
+            round
+            fit="cover"
+            :src="$axios.defaults.baseURL +  userInfo.head_img"
+            width="20vw"
+            height="20vw"
+          />
+        </div>
+        <div v-else>
+          <van-image round fit="cover" src="../assets/logo.png" width="20vw" height="20vw" />
+        </div>
       </label>
     </div>
 
     <!-- 昵称 -->
     <PersonalCell label="昵称" :desc="userInfo.nickname" @click="isShownickname = true" />
-    <van-dialog v-model="isShownickname" title="修改昵称" show-cancel-button @confirm="editNickname">
+    <van-dialog
+      v-model="isShownickname"
+      title="修改昵称"
+      show-cancel-button
+      @confirm="editNickname"
+      @cancel="newNickname = ''"
+    >
       <van-cell-group>
-        <van-field v-model="newNickname" placeholder="请输入修改的昵称" />
+        <van-field v-model="newNickname" placeholder="请输入修改的昵称" type="test" />
       </van-cell-group>
     </van-dialog>
 
     <!-- 密码 -->
     <PersonalCell label="密码" desc="******" @click="isShowpassword = true" />
-    <van-dialog v-model="isShowpassword" title="修改密码" show-cancel-button @confirm="editPassword">
+    <van-dialog
+      v-model="isShowpassword"
+      title="修改密码"
+      show-cancel-button
+      @confirm="editPassword"
+      @cancel="newPassword=''"
+    >
       <van-cell-group>
-        <van-field v-model="newPassword" placeholder="请输入修改的密码" />
+        <van-field v-model="newPassword" placeholder="请输入修改的密码" type="password" />
       </van-cell-group>
     </van-dialog>
 
@@ -83,7 +100,9 @@ export default {
 
       // question:为什么上传失败的时候,没有被拦截器拦截信息
       // answer:因为后面的toast会覆盖前面的toast,当后面与前面的toast同时触发的时候
-      // 第二个问题:data的参数是一个对象,为什么不能直接传file对象
+
+      // question:data的参数是一个对象,为什么不能直接传file对象
+      // answer:因为前端与后端的通信数据格式只有两个格式:字符串和二进制.file对象需要让FormData对象转换为二进制格式的数据才能发给服务器处理
       this.$axios({
         method: "post",
         url: "/upload",

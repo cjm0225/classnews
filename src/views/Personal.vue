@@ -19,7 +19,7 @@
       <span class="iconfont iconjiantou1"></span>
     </div>
     <!-- @click="showAttention" -->
-    <PersonalCell label="我的关注" desc="关注的用户"></PersonalCell>
+    <PersonalCell label="我的关注" desc="关注的用户" @click="follwPage"></PersonalCell>
     <!-- @click="showFollow" -->
     <PersonalCell label="我的跟帖" desc="跟帖/回帖"></PersonalCell>
     <!-- @click="showCollect" -->
@@ -50,9 +50,6 @@ export default {
   mounted() {
     this.$axios({
       url: "/user/" + localStorage.getItem("userId"),
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
     }).then((response) => {
       if (response.data.message === "获取成功") {
         this.userInfo = response.data.data;
@@ -73,6 +70,9 @@ export default {
     },
     editProfile() {
       this.$router.push("/profile");
+    },
+    follwPage() {
+      this.$router.push("/follow");
     },
   },
 };

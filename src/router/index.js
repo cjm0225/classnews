@@ -5,6 +5,9 @@ import Login from "../views/Login"
 import Register from "../views/Register"
 import Personal from "../views/Personal"
 import Profile from "../views/Profile"
+import Test from "../views/Test"
+import Follow from "../views/Follow"
+
 
 import { Toast } from 'vant';
 
@@ -33,6 +36,12 @@ const routes = [
 
   },
   {
+    path: "/test",
+    component: Test,
+
+  },
+
+  {
     path: "/personal",
     component: Personal,
     meta: {
@@ -45,6 +54,10 @@ const routes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: "/follow",
+    component: Follow
   }
 
 ]

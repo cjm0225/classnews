@@ -5,7 +5,7 @@
       :placeholder="placeholder"
       v-model="val"
       :class="{error:!isValid}"
-      @blur="bluehandler"
+      @blur="blurhandler"
     />
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
     },
   },
   methods: {
-    bluehandler() {
+    blurhandler() {
       if (this.isValid === false) {
         this.$toast.fail({
           message: this.error_msg,

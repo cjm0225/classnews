@@ -9,6 +9,18 @@ Vue.prototype.$axios = axios
 
 axios.defaults.baseURL = "http://127.0.0.1:3000"
 
+
+// axios请求拦截器
+axios.interceptors.request.use(request => {
+    // 如果本地有token,而且axios请求headers.authrization没有带上token,就自动带上token
+    if (localStorage.getItem("token") && !request.headers.Authorization) {
+        request.headers.Authorization = "Bearer " + localStorage.getItem("token");
+    }
+
+    return request;
+});
+
+
 // axios响应拦截器
 axios.interceptors.response.use(response => {
 
