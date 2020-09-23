@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="top">
-      <img class="avatar" src="../assets/logo.png" />
+    <div class="top" @click="editProfile">
+      <img class="avatar" :src="$axios.defaults.baseURL +  userInfo.head_img" />
       <div class="info">
         <div class="name">
           <span
@@ -21,18 +21,22 @@
     <!-- @click="showAttention" -->
     <PersonalCell label="我的关注" desc="关注的用户"></PersonalCell>
     <!-- @click="showFollow" -->
-    <PersonalCell label="我的跟帖" desc="跟帖/huitie"></PersonalCell>
+    <PersonalCell label="我的跟帖" desc="跟帖/回帖"></PersonalCell>
     <!-- @click="showCollect" -->
     <PersonalCell label="我的收藏" desc="文章/视频"></PersonalCell>
     <!--  @click="showSettting" -->
     <PersonalCell label="设置"></PersonalCell>
     <PersonalCell label="退出" @click="logout"></PersonalCell>
+    <div class="btn">
+      <AnthBtn commit="返回首页" @click.native="clickhandler"></AnthBtn>
+    </div>
   </div>
 </template>
 
 
 <script>
 import PersonalCell from "../components/PersonalCell";
+import AnthBtn from "../components/AnthBtn";
 export default {
   data() {
     return {
@@ -41,10 +45,11 @@ export default {
   },
   components: {
     PersonalCell,
+    AnthBtn,
   },
   mounted() {
     this.$axios({
-      url: "http://localhost:3000/user/" + localStorage.getItem("userId"),
+      url: "/user/" + localStorage.getItem("userId"),
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -62,6 +67,12 @@ export default {
       setTimeout(() => {
         this.$router.replace("/login");
       }, 800);
+    },
+    clickhandler() {
+      this.$router.push("/home");
+    },
+    editProfile() {
+      this.$router.push("/profile");
     },
   },
 };
@@ -97,5 +108,8 @@ export default {
       padding-top: 6/360 * 100vw;
     }
   }
+}
+.btn {
+  padding: 24/360 * 100vw;
 }
 </style>

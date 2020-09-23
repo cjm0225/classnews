@@ -53,7 +53,7 @@ export default {
         return;
       }
       this.$axios({
-        url: "http://localhost:3000/login",
+        url: "/login",
         method: "post",
         data: { username: this.username, password: this.password },
       }).then((response) => {

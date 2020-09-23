@@ -62,7 +62,7 @@ export default {
     },
     registerhandler() {
       this.$axios({
-        url: "http://localhost:3000/register",
+        url: "/register",
         method: "post",
         data: {
           username: this.username,

@@ -24,6 +24,6 @@ export default {
   line-height: 48/360 * 100vw;
   border-radius: 24/360 * 100vw;
   margin-top: 30/360 * 100vw;
-  font-size: 24/360 * 100vw;
+  font-size: 18/360 * 100vw;
 }
 </style>
