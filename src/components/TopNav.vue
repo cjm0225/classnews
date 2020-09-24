@@ -12,7 +12,11 @@ export default {
   },
   methods: {
     clickhandler() {
-      this.$router.push("/personal");
+      if (this.title === "栏目管理") {
+        this.$router.push("/home");
+      } else {
+        this.$router.push("/personal");
+      }
     },
   },
 };

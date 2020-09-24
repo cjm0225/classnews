@@ -7,6 +7,8 @@ import Personal from "../views/Personal"
 import Profile from "../views/Profile"
 import Test from "../views/Test"
 import Follow from "../views/Follow"
+import Collection from "../views/Collection"
+import CategoryList from "../views/CategoryList"
 
 
 import { Toast } from 'vant';
@@ -58,6 +60,14 @@ const routes = [
   {
     path: "/follow",
     component: Follow
+  },
+  {
+    path: "/collection",
+    component: Collection
+  },
+  {
+    path: "/categoryList",
+    component: CategoryList
   }
 
 ]
@@ -76,9 +86,8 @@ router.beforeEach((to, from, next) => {
     } else {
       Toast.fail("请先登录");
       setTimeout(() => {
-        next("/login");
+        router.push("/login");
       }, 800);
-
     }
   } else {
     next();

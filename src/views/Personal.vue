@@ -23,7 +23,7 @@
     <!-- @click="showFollow" -->
     <PersonalCell label="我的跟帖" desc="跟帖/回帖"></PersonalCell>
     <!-- @click="showCollect" -->
-    <PersonalCell label="我的收藏" desc="文章/视频"></PersonalCell>
+    <PersonalCell label="我的收藏" desc="文章/视频" @click="CollectionPage"></PersonalCell>
     <!--  @click="showSettting" -->
     <PersonalCell label="设置"></PersonalCell>
     <PersonalCell label="退出" @click="logout"></PersonalCell>
@@ -73,6 +73,9 @@ export default {
     },
     follwPage() {
       this.$router.push("/follow");
+    },
+    CollectionPage() {
+      this.$router.push("/collection");
     },
   },
 };
