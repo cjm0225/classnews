@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <HomeTop @click="toPersonalPage"></HomeTop>
+    <HomeTop></HomeTop>
     <van-tabs
       v-model="active"
       color="#3a3a3a"

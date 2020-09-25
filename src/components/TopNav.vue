@@ -1,6 +1,7 @@
 <template>
   <div class="navWrapper">
     <span class="iconfont iconjiantou2" @click="clickhandler"></span>
+    <slot></slot>
     <div class="title">{{title}}</div>
   </div>
 </template>
@@ -12,11 +13,12 @@ export default {
   },
   methods: {
     clickhandler() {
-      if (this.title === "栏目管理") {
-        this.$router.push("/home");
-      } else {
-        this.$router.push("/personal");
-      }
+      // if (this.title === "栏目管理") {
+      //   this.$router.push("/home");
+      // } else {
+      //   this.$router.push("/personal");
+      // }
+      this.$emit("pushPage");
     },
   },
 };
@@ -31,7 +33,6 @@ export default {
     flex: 1;
     text-align: center;
     font-size: 14/360 * 100vw;
-    font-weight: bold;
     padding-right: 10/360 * 100vw;
   }
   .iconjiantou2 {

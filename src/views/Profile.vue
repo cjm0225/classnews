@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TopNav title="编辑资料"></TopNav>
+    <TopNav title="编辑资料" @pushPage="pushPage"></TopNav>
     <div class="avatar">
       <label>
         <van-uploader style="display:none" :max-count="1" :after-read="afterRead" />
@@ -201,6 +201,9 @@ export default {
           this.userInfo.gender = item.genderCode;
         }
       );
+    },
+    pushPage() {
+      this.$router.push("/personal");
     },
   },
 };

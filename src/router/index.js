@@ -7,8 +7,10 @@ import Personal from "../views/Personal"
 import Profile from "../views/Profile"
 import Test from "../views/Test"
 import Follow from "../views/Follow"
-import Collection from "../views/Collection"
+import CollectionList from "../views/CollectionList"
 import CategoryList from "../views/CategoryList"
+import CommentList from "../views/CommentList"
+import ArticleSearch from "../views/ArticleSearch"
 
 
 import { Toast } from 'vant';
@@ -62,13 +64,21 @@ const routes = [
     component: Follow
   },
   {
-    path: "/collection",
-    component: Collection
+    path: "/collectionList",
+    component: CollectionList
   },
   {
     path: "/categoryList",
     component: CategoryList
-  }
+  },
+  {
+    path: "/commentList",
+    component: CommentList
+  },
+  {
+    path: "/articlesearch",
+    component: ArticleSearch
+  },
 
 ]
 
