@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <HomeTop></HomeTop>
@@ -42,12 +41,17 @@ export default {
     toPersonalPage() {
       this.$router.push("/personal");
     },
-    // 每次点击标题都获取响应的标题新闻内容
-    clickHandler(name, title) {
+    // 封装一个查找每个类别文章数据的ajax请求
+    findArticleData(name, title) {
+      // 数据的name就是文章分类名字,title是插件封装的每一个标签的名字,name是active从初始值0开始的数值
       const news = this.titleList.find((item) => {
         return item.name === title;
       });
-      const id = news.id;
+
+      // 找到栏目名字相同的对象数值,并取出响应的文章类型id
+      const { id } = news;
+
+      // 发送请求,获取响应的文章类型
       this.$axios({
         url: "/post",
         params: {
@@ -63,24 +67,18 @@ export default {
         url: "/category",
       }).then((response) => {
         this.titleList = response.data.data;
+        console.log(this.titleList);
       });
     },
     // 第一次进入画面的时候,自动渲染第一个标题的新闻内容
     renderedHandler(name, title) {
       if (name === 0) {
-        const news = this.titleList.find((item) => {
-          return item.name === title;
-        });
-        const id = news.id;
-        this.$axios({
-          url: "/post",
-          params: {
-            category: id,
-          },
-        }).then((response) => {
-          this.newsList = response.data.data;
-        });
+        this.findArticleData(name, title);
       }
+    },
+    // 每次点击标题都获取响应的标题新闻内容
+    clickHandler(name, title) {
+      this.findArticleData(name, title);
     },
   },
 };

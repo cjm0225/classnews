@@ -11,6 +11,7 @@ import CollectionList from "../views/CollectionList"
 import CategoryList from "../views/CategoryList"
 import CommentList from "../views/CommentList"
 import ArticleSearch from "../views/ArticleSearch"
+import HomeTeacher from "../views/HomeTeacher2"
 
 
 import { Toast } from 'vant';
@@ -78,6 +79,10 @@ const routes = [
   {
     path: "/articlesearch",
     component: ArticleSearch
+  },
+  {
+    path: "/homeTeacher",
+    component: HomeTeacher
   },
 
 ]
