@@ -10,4 +10,5 @@ export default {};
 
 <style lang="less">
 @import url("http://at.alicdn.com/t/font_1426139_h6vn3jbl5q.css");
+@import url("http://at.alicdn.com/t/font_2104413_tnkdq3vru6j.css");
 </style>

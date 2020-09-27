@@ -1,17 +1,23 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
 import Home from "../views/Home"
+import CategoryList from "../views/CategoryList"
+import ArticleSearch from "../views/ArticleSearch"
+import ArticleDetail from "../views/ArticleDetail"
+
+
 import Login from "../views/Login"
 import Register from "../views/Register"
+
 import Personal from "../views/Personal"
 import Profile from "../views/Profile"
-import Test from "../views/Test"
 import Follow from "../views/Follow"
 import CollectionList from "../views/CollectionList"
-import CategoryList from "../views/CategoryList"
 import CommentList from "../views/CommentList"
-import ArticleSearch from "../views/ArticleSearch"
-import HomeTeacher from "../views/HomeTeacher2"
+
+
+import Test from "../views/Test"
 
 
 import { Toast } from 'vant';
@@ -62,11 +68,19 @@ const routes = [
   },
   {
     path: "/follow",
-    component: Follow
+    component: Follow,
+    meta: {
+      requiresAuth: true
+    }
+
   },
   {
     path: "/collectionList",
-    component: CollectionList
+    component: CollectionList,
+    meta: {
+      requiresAuth: true
+    }
+
   },
   {
     path: "/categoryList",
@@ -74,15 +88,19 @@ const routes = [
   },
   {
     path: "/commentList",
-    component: CommentList
+    component: CommentList,
+    meta: {
+      requiresAuth: true
+    }
+
   },
   {
     path: "/articlesearch",
     component: ArticleSearch
   },
   {
-    path: "/homeTeacher",
-    component: HomeTeacher
+    path: "/articledetail/:id",
+    component: ArticleDetail
   },
 
 ]

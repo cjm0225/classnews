@@ -1,13 +1,18 @@
 <template>
-  <div class="news">
+  <div class="news" @click="$router.push('/articledetail/' + categoryNews.id)">
     <!-- 显示类型为1,但图片只有一张的新闻 -->
-    <div v-if="categoryNews.type===1&&categoryNews.cover.length===1">
+    <div v-if="categoryNews.type === 1 && categoryNews.cover.length === 1">
       <div class="typeOne">
         <div class="left">
-          <div class="title top">{{categoryNews.title}}</div>
+          <div class="title top">{{ categoryNews.title }}</div>
           <div class="bottom">
-            <div class="author">{{categoryNews.user.nickname}}</div>
-            <div class="follow">{{categoryNews.comment_length}}跟帖</div>
+            <div class="author">{{ categoryNews.user.nickname }}</div>
+            <div class="follow" v-if="categoryNews.comment_length >= 0">
+              {{ categoryNews.comment_length }}跟帖
+            </div>
+            <div class="follow" v-if="categoryNews.comments">
+              {{ categoryNews.comments.length }}跟帖
+            </div>
           </div>
         </div>
         <div class="right">
@@ -18,31 +23,45 @@
 
     <!-- 显示类型为1,但图片有三张的新闻 -->
     <div
-      v-if="categoryNews.type===1 && categoryNews.cover.length>1 && categoryNews.cover.length<=3"
+      v-if="
+        categoryNews.type === 1 &&
+        categoryNews.cover.length > 1 &&
+        categoryNews.cover.length <= 3
+      "
     >
       <div class="typeTwo">
-        <div class="title">{{categoryNews.title}}</div>
+        <div class="title">{{ categoryNews.title }}</div>
         <div class="imgList">
           <img :src="img.url" v-for="img of categoryNews.cover" :key="img.id" />
         </div>
         <div class="bottom">
-          <div class="author">{{categoryNews.user.nickname}}</div>
-          <div class="follow">{{categoryNews.comment_length}}跟帖</div>
+          <div class="author">{{ categoryNews.user.nickname }}</div>
+          <div class="follow" v-if="categoryNews.comment_length >= 0">
+            {{ categoryNews.comment_length }}跟帖
+          </div>
+          <div class="follow" v-if="categoryNews.comments">
+            {{ categoryNews.comments.length }}跟帖
+          </div>
         </div>
       </div>
     </div>
 
     <!-- 显示类型为2的新闻 -->
-    <div v-if="categoryNews.type===2">
+    <div v-if="categoryNews.type === 2">
       <div class="typeThree">
-        <div class="title">{{categoryNews.title}}</div>
+        <div class="title">{{ categoryNews.title }}</div>
         <div class="video">
           <img :src="categoryNews.cover[0].url" />
           <span class="iconfont iconshipin"></span>
         </div>
         <div class="bottom">
-          <div class="author">{{categoryNews.user.nickname}}</div>
-          <div class="follow">{{categoryNews.comment_length}}跟帖</div>
+          <div class="author">{{ categoryNews.user.nickname }}</div>
+          <div class="follow" v-if="categoryNews.comment_length >= 0">
+            {{ categoryNews.comment_length }}跟帖
+          </div>
+          <div class="follow" v-if="categoryNews.comments">
+            {{ categoryNews.comments.length }}跟帖
+          </div>
         </div>
       </div>
     </div>
