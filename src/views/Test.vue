@@ -44,7 +44,16 @@
           @click="volumeBtnHandler"
         ></div>
         <!-- 全屏按钮 -->
-        <div class="iconfont icon-quanping" @click="fullScreen"></div>
+        <div
+          class="iconfont icon-quanping"
+          @click="fullScreen"
+          v-if="isShowFullScreen"
+        ></div>
+        <div
+          class="iconfont icon-tuichuquanping"
+          @click="ExitfullScreen"
+          v-else
+        ></div>
       </div>
     </div>
   </div>
@@ -57,6 +66,7 @@ export default {
       value: 0,
       isVideoPlay: false,
       isMuted: true,
+      isShowFullScreen: true,
       videodurationTime: 0,
       currentTime: 0,
       videoElement: {},
@@ -103,10 +113,9 @@ export default {
   methods: {
     // 默认关闭声音，提高用户体验
     defaultMuted() {
-      // this.$refs.video.defaultMuted = true;
       this.$refs.video.muted = true;
     },
-    // 获取视频源的播放时长
+    // 在视频源加载完成后,获取视频源的播放时长
     loadedmetadata(videoInfo) {
       if (videoInfo) {
         // videoInfo.target.duration是视屏的时间
@@ -142,8 +151,10 @@ export default {
     timeupdatehandler(videoInfo) {
       // 时间进度
       this.currentTime = parseInt(videoInfo.target.currentTime);
-      // 更新下面进度条
-      this.value = parseInt(videoInfo.target.currentTime);
+      // 更新下面进度条,但是进度条是以百分比显示,需要处理数据
+      this.value = parseInt(
+        (parseInt(videoInfo.target.currentTime) / this.videodurationTime) * 100
+      );
     },
     //拖拉进度条开始时,默认停止视屏
     dragstarthandler() {
@@ -156,13 +167,51 @@ export default {
     },
     // 播放结束后,初始化播放进度
     endedhandler() {
-      // this.$refs.video.currentTime = 0;
+      this.$refs.video.currentTime = 0;
       this.isVideoPlay = false;
     },
     // 全屏播放
     fullScreen() {
-      this.$refs.video.webkitRequestFullScreen();
+      // webkit引擎浏览器全屏,google safari浏览器
+      this.$refs.video.webkitRequestFullScreen ||
+        this.$refs.video.webkitRequestFullScreen();
+      // 火狐浏览器
+      this.$refs.video.mozRequestFullScreen ||
+        this.$refs.video.mozRequestFullScreen();
+
+      // IE浏览器
+      this.$refs.video.msRequestFullscreen ||
+        this.$refs.video.msRequestFullscreen();
+
+      // opera浏览器
+      this.$refs.video.oRequestFullscreen ||
+        this.$refs.video.oRequestFullscreen();
+
+      // 退出全屏图标显示
+      this.isShowFullScreen = false;
     },
+    // 退出全屏
+    ExitfullScreen() {
+      // webkit引擎浏览器全屏,google safari浏览器
+      this.$refs.video.webkitRequestFullScreen ||
+        this.$refs.video.webkitRequestFullScreen();
+      // 火狐浏览器
+      this.$refs.video.mozRequestFullScreen ||
+        this.$refs.video.mozRequestFullScreen();
+
+      // IE浏览器
+      this.$refs.video.msRequestFullscreen ||
+        this.$refs.video.msRequestFullscreen();
+
+      // opera浏览器
+      this.$refs.video.oRequestFullscreen ||
+        this.$refs.video.oRequestFullscreen();
+
+      // 全屏图标显示
+      this.isShowFullScreen = true;
+    },
+
+    // 点击视频元素,控制视频播放状态
     videoPlay() {
       this.playBtnhandler();
     },
@@ -172,6 +221,7 @@ export default {
 
 <style lang="less" scoped>
 video {
+  box-sizing: border-box;
   width: 100%;
   height: 250/360 * 100vw;
 }
@@ -189,6 +239,7 @@ video {
       padding: 0 10/360 * 100vw;
       bottom: 0;
       width: 100%;
+      box-sizing: border-box;
       height: 50/360 * 100vw;
       background-color: #0000007a;
       color: #ffffffeb;
@@ -206,7 +257,7 @@ video {
       }
       .volumeBtn {
         font-size: 20/360 * 100vw;
-        padding: 0 10/360 * 100vw 0 15/360 * 100vw;
+        margin: 0 10/360 * 100vw 0 15/360 * 100vw;
       }
       .icon-quanping {
         font-size: 30/360 * 100vw;
