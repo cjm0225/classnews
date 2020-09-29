@@ -15,6 +15,8 @@ import Profile from "../views/Profile"
 import Follow from "../views/Follow"
 import CollectionList from "../views/CollectionList"
 import CommentList from "../views/CommentList"
+import MoreComment from "../views/MoreComment"
+
 
 
 import Test from "../views/Test"
@@ -101,6 +103,11 @@ const routes = [
   {
     path: "/articledetail/:id",
     component: ArticleDetail
+
+  },
+  {
+    path: "/morecomment/:id",
+    component: MoreComment
   },
 
 ]

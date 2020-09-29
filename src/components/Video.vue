@@ -2,9 +2,8 @@
   <div class="video-main">
     <div class="videoBox">
       <video
-        src="https://video.pearvideo.com/mp4/adshort/20200927/cont-1699344-15404736_adpkg-ad_hd.mp4"
+        :src="src"
         ref="video"
-        poster="../assets/logo.png"
         @loadedmetadata="loadedmetadata"
         @timeupdate="timeupdatehandler"
         @ended="endedhandler"
@@ -73,6 +72,7 @@ export default {
       isShowFullScreen: true,
       videodurationTime: 0,
       currentTime: 0,
+      videoElement: {},
     };
   },
   created() {
@@ -162,7 +162,6 @@ export default {
     //拖拉进度条开始时,默认停止视屏
     dragstarthandler() {
       this.$refs.video.pause();
-      this.isVideoPlay = false;
     },
     // 拖拉进度条结束时,默认播放视屏
     dragendhandler() {
@@ -195,26 +194,25 @@ export default {
       // this.isShowFullScreen = false;
     },
     // 退出全屏
-    // ExitfullScreen() {
-    //   // webkit引擎浏览器全屏,google safari浏览器
-    //   this.$refs.video.webkitRequestFullScreen &&
-    //     this.$refs.video.webkitRequestFullScreen();
+    ExitfullScreen() {
+      // webkit引擎浏览器全屏,google safari浏览器
+      this.$refs.video.webkitRequestFullScreen &&
+        this.$refs.video.webkitRequestFullScreen();
+      // 火狐浏览器
+      this.$refs.video.mozRequestFullScreen &&
+        this.$refs.video.mozRequestFullScreen();
 
-    //   // 火狐浏览器
-    //   this.$refs.video.mozRequestFullScreen &&
-    //     this.$refs.video.mozRequestFullScreen();
+      // IE浏览器
+      this.$refs.video.msRequestFullscreen &&
+        this.$refs.video.msRequestFullscreen();
 
-    //   // IE浏览器
-    //   this.$refs.video.msRequestFullscreen &&
-    //     this.$refs.video.msRequestFullscreen();
+      // opera浏览器
+      this.$refs.video.oRequestFullscreen &&
+        this.$refs.video.oRequestFullscreen();
 
-    //   // opera浏览器
-    //   this.$refs.video.oRequestFullscreen &&
-    //     this.$refs.video.oRequestFullscreen();
-
-    //   // 全屏图标显示
-    //   this.isShowFullScreen = true;
-    // },
+      // 全屏图标显示
+      this.isShowFullScreen = true;
+    },
 
     // 点击视频元素,控制视频播放状态
     videoPlay() {
@@ -225,17 +223,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-video {
-  box-sizing: border-box;
-  width: 100%;
-  height: 250/360 * 100vw;
-}
 .video-main {
   .videoBox {
     position: relative;
     video {
       width: 100%;
-      height: 250/360 * 100vw;
+      height: 203/360 * 100vw;
     }
     .controBar {
       display: flex;

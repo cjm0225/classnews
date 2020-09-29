@@ -1,29 +1,43 @@
 <template>
   <div>
     <div class="top" @click="editProfile">
-      <img class="avatar" :src="$axios.defaults.baseURL +  userInfo.head_img" />
+      <img class="avatar" :src="$axios.defaults.baseURL + userInfo.head_img" />
       <div class="info">
         <div class="name">
           <span
             class="iconfont"
             :class="{
-                        iconxingbienan: userInfo.gender == 1,
-                        iconxingbienv: userInfo.gender == 0
-                    }"
+              iconxingbienan: userInfo.gender == 1,
+              iconxingbienv: userInfo.gender == 0,
+            }"
           ></span>
 
-          <span>{{userInfo.nickname}}</span>
+          <span>{{ userInfo.nickname }}</span>
         </div>
-        <div class="date" v-if="userInfo.create_date">{{userInfo.create_date.split("T")[0]}}</div>
+        <div class="date" v-if="userInfo.create_date">
+          {{ userInfo.create_date.split("T")[0] }}
+        </div>
       </div>
       <span class="iconfont iconjiantou1"></span>
     </div>
     <!-- @click="showAttention" -->
-    <PersonalCell label="我的关注" desc="关注的用户" @click="follwPage"></PersonalCell>
+    <PersonalCell
+      label="我的关注"
+      desc="关注的用户"
+      @click="follwPage"
+    ></PersonalCell>
     <!-- @click="showFollow" -->
-    <PersonalCell label="我的跟帖" desc="跟帖/回帖" @click="CommentPage"></PersonalCell>
+    <PersonalCell
+      label="我的跟帖"
+      desc="跟帖/回帖"
+      @click="CommentPage"
+    ></PersonalCell>
     <!-- @click="showCollect" -->
-    <PersonalCell label="我的收藏" desc="文章/视频" @click="CollectionPage"></PersonalCell>
+    <PersonalCell
+      label="我的收藏"
+      desc="文章/视频"
+      @click="CollectionPage"
+    ></PersonalCell>
     <!--  @click="showSettting" -->
     <PersonalCell label="设置"></PersonalCell>
     <PersonalCell label="退出" @click="logout"></PersonalCell>
@@ -78,7 +92,7 @@ export default {
       this.$router.push("/collectionList");
     },
     CommentPage() {
-      this.$router.push("/commentList");
+      // this.$router.push("/commentList");
     },
   },
 };

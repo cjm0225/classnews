@@ -29,18 +29,9 @@
     </div>
     <div class="typeTwo" v-if="articleDetail.type === 2">
       <div class="wrapper">
-        <div class="overlay" @click="playhandler" v-if="isOverlayShow">
-          <span class="iconfont iconshipin"></span>
-        </div>
-        <div class="video" @click="playhandler">
-          <video
-            src="https://video.pearvideo.com/mp4/adshort/20200925/cont-1699101-15402375_adpkg-ad_hd.mp4"
-            controls
-            ref="video"
-            @pause="pausehandler"
-            @seeking="seekinghandler"
-          ></video>
-        </div>
+        <Video
+          src="https://video.pearvideo.com/mp4/adshort/20200928/cont-1699500-15406886_adpkg-ad_hd.mp4"
+        ></Video>
       </div>
       <div class="content">
         <div class="info">
@@ -54,6 +45,7 @@
       </div>
     </div>
     <div class="bottom">
+      <!-- 点赞按钮 -->
       <div
         class="like btn"
         :class="{
@@ -64,28 +56,74 @@
         <span class="iconfont icondianzan"></span>
         <span>{{ articleDetail.like_length }}</span>
       </div>
+
+      <!-- 微信按钮 -->
       <div class="wechat btn">
         <span class="iconfont iconweixin"></span>
         <span>微信</span>
       </div>
     </div>
+
+    <!-- 精彩跟帖 -->
+    <div class="commentWrapper">
+      <h2>精彩跟帖</h2>
+      <Comment
+        v-for="comment of CommentList"
+        :key="comment.id"
+        :comment="comment"
+      ></Comment>
+    </div>
+
+    <!-- 更多跟帖按钮 -->
+    <div class="moreComment" v-if="CommentList.length > 0">
+      <div class="more" @click="moreComment">更多跟帖</div>
+    </div>
+    <div class="empty" v-else>
+      <span>暂无跟帖,抢占沙发</span>
+    </div>
+
+    <!-- 底部工具栏 -->
+    <div class="bottomTool">
+      <div class="writeFollow">写跟帖</div>
+      <van-icon name="chat-o" badge="99+" size="8vw" />
+      <van-icon name="star-o" size="8vw" class="star" />
+      <div class="iconfont iconfenxiang"></div>
+    </div>
   </div>
 </template>
 
 <script>
+import Comment from "../components/Comment";
+import Video from "../components/Video";
 export default {
   data() {
     return {
       articleDetail: [],
-      isOverlayShow: true,
+      CommentList: [],
     };
   },
+  components: {
+    Comment,
+    Video,
+  },
   created() {
+    // 获取文章详情
     this.$axios({
       url: "/post/" + this.$route.params.id,
     }).then((response) => {
       this.articleDetail = response.data.data;
-      console.log(this.articleDetail);
+    });
+
+    // 获取评论
+    this.$axios({
+      url: "/post_comment/" + this.$route.params.id,
+    }).then((response) => {
+      // 数组的长度代表评论的数量,所以可以使用数组的长度来控制评论的数量显示
+      if (response.data.data.length > 3) {
+        response.data.data.length = 3;
+      }
+
+      this.CommentList = response.data.data;
     });
   },
   methods: {
@@ -110,7 +148,6 @@ export default {
       this.$axios({
         url: "/post_like/" + this.$route.params.id,
       }).then((response) => {
-        console.log(response.data);
         if (response.data.message === "点赞成功") {
           // 直接手动修改,不重新请求文章详情数据
           this.articleDetail.has_like = true;
@@ -121,18 +158,8 @@ export default {
         }
       });
     },
-    playhandler() {
-      this.$refs.video.play();
-      this.isOverlayShow = false;
-    },
-    pausehandler() {
-      this.isOverlayShow = true;
-    },
-    timeupdatehandler() {
-      this.isOverlayShow = false;
-    },
-    seekinghandler() {
-      this.isOverlayShow = false;
+    moreComment() {
+      this.$router.push("/morecomment/" + this.$route.params.id);
     },
   },
 };
@@ -250,6 +277,7 @@ export default {
 .bottom {
   display: flex;
   padding: 0 80/360 * 100vw;
+  margin-bottom: 30/360 * 100vw;
   justify-content: space-around;
   .btn {
     border: 1px solid #888;
@@ -269,6 +297,55 @@ export default {
   .iconweixin {
     margin-right: 5 /360 * 100vw;
     color: #0a0;
+  }
+}
+.commentWrapper {
+  border-top: 4px solid #ccc;
+  h2 {
+    text-align: center;
+  }
+}
+.moreComment {
+  margin: 20/360 * 100vw 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .more {
+    width: 100/360 * 100vw;
+    height: 30/360 * 100vw;
+    border-radius: 15/360 * 100vw;
+    border: 1px solid black;
+    text-align: center;
+    line-height: 30/360 * 100vw;
+  }
+}
+.empty {
+  font-size: 14/360 * 100vw;
+  color: #888;
+  text-align: center;
+  padding-bottom: 50/360 * 100vw;
+  border-bottom: 1px solid #ccc;
+}
+.bottomTool {
+  display: flex;
+  align-items: center;
+  margin: 20/360 * 100vw;
+  .writeFollow {
+    // flex: 1;
+    width: 160/360 * 100vw;
+    height: 40/360 * 100vw;
+    padding-left: 15/360 * 100vw;
+    margin-right: 20/360 * 100vw;
+    border-radius: 20 /360 * 100vw;
+    background-color: #ccc;
+    line-height: 40/360 * 100vw;
+    font-size: 16/360 * 100vw;
+  }
+  .star {
+    margin: 0 20/360 * 100vw;
+  }
+  .iconfenxiang {
+    font-size: 8vw;
   }
 }
 </style>

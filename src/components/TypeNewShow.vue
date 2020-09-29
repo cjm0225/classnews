@@ -8,10 +8,10 @@
           <div class="bottom">
             <div class="author">{{ categoryNews.user.nickname }}</div>
             <div class="follow" v-if="categoryNews.comment_length >= 0">
-              {{ categoryNews.comment_length }}跟帖
+              {{ categoryNews.comment_length }}&nbsp;跟帖
             </div>
             <div class="follow" v-if="categoryNews.comments">
-              {{ categoryNews.comments.length }}跟帖
+              {{ categoryNews.comments.length }}&nbsp;跟帖
             </div>
           </div>
         </div>
@@ -37,10 +37,10 @@
         <div class="bottom">
           <div class="author">{{ categoryNews.user.nickname }}</div>
           <div class="follow" v-if="categoryNews.comment_length >= 0">
-            {{ categoryNews.comment_length }}跟帖
+            {{ categoryNews.comment_length }}&nbsp;跟帖
           </div>
           <div class="follow" v-if="categoryNews.comments">
-            {{ categoryNews.comments.length }}跟帖
+            {{ categoryNews.comments.length }}&nbsp;跟帖
           </div>
         </div>
       </div>
@@ -57,10 +57,10 @@
         <div class="bottom">
           <div class="author">{{ categoryNews.user.nickname }}</div>
           <div class="follow" v-if="categoryNews.comment_length >= 0">
-            {{ categoryNews.comment_length }}跟帖
+            {{ categoryNews.comment_length }}&nbsp;跟帖
           </div>
           <div class="follow" v-if="categoryNews.comments">
-            {{ categoryNews.comments.length }}跟帖
+            {{ categoryNews.comments.length }}&nbsp;跟帖
           </div>
         </div>
       </div>

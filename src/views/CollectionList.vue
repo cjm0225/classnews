@@ -1,11 +1,18 @@
 <template>
   <div>
     <TopNav title="我的收藏" @pushPage="pushPage"></TopNav>
-    <TypeNewShow
-      v-for="collection of collectionList"
-      :key="collection.id"
-      :categoryNews="collection"
-    ></TypeNewShow>
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
+    >
+      <TypeNewShow
+        v-for="collection of collectionList"
+        :key="collection.id"
+        :categoryNews="collection"
+      ></TypeNewShow>
+    </van-list>
   </div>
 </template>
 
@@ -16,6 +23,8 @@ export default {
   data() {
     return {
       collectionList: [],
+      loading: false,
+      finished: false,
     };
   },
   components: {
@@ -32,6 +41,12 @@ export default {
   methods: {
     pushPage() {
       this.$router.push("/personal");
+    },
+    onLoad() {
+      this.loading = false;
+      if (this.collectionList.length > 0) {
+        this.finished = true;
+      }
     },
   },
 };
