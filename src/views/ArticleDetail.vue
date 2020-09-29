@@ -37,7 +37,15 @@
         <div class="info">
           <img src="../assets/logo.png" class="avatar" />
           <span class="username">火星时报</span>
-          <div class="followBtn">关注</div>
+          <div
+            class="followBtn"
+            :class="{
+              unfollow: !articleDetail.has_follow,
+            }"
+            @click="handlerFollow"
+          >
+            {{ articleDetail.has_follow ? "已关注" : "关注" }}
+          </div>
         </div>
         <div class="title">
           {{ articleDetail.title }}
@@ -82,19 +90,17 @@
       <span>暂无跟帖,抢占沙发</span>
     </div>
 
-    <!-- 底部工具栏 -->
-    <div class="bottomTool">
-      <div class="writeFollow">写跟帖</div>
-      <van-icon name="chat-o" badge="99+" size="8vw" />
-      <van-icon name="star-o" size="8vw" class="star" />
-      <div class="iconfont iconfenxiang"></div>
-    </div>
+    <bottomTool
+      :articleId="$route.params.id"
+      @loadComment="loadComment"
+    ></bottomTool>
   </div>
 </template>
 
 <script>
 import Comment from "../components/Comment";
 import Video from "../components/Video";
+import bottomTool from "../components/bottomTool";
 export default {
   data() {
     return {
@@ -105,6 +111,7 @@ export default {
   components: {
     Comment,
     Video,
+    bottomTool,
   },
   created() {
     // 获取文章详情
@@ -114,19 +121,23 @@ export default {
       this.articleDetail = response.data.data;
     });
 
-    // 获取评论
-    this.$axios({
-      url: "/post_comment/" + this.$route.params.id,
-    }).then((response) => {
-      // 数组的长度代表评论的数量,所以可以使用数组的长度来控制评论的数量显示
-      if (response.data.data.length > 3) {
-        response.data.data.length = 3;
-      }
-
-      this.CommentList = response.data.data;
-    });
+    //  获取评论
+    this.loadComment();
   },
   methods: {
+    loadComment() {
+      // 获取评论
+      this.$axios({
+        url: "/post_comment/" + this.$route.params.id,
+      }).then((response) => {
+        // 数组的长度代表评论的数量,所以可以使用数组的长度来控制评论的数量显示
+        if (response.data.data.length > 3) {
+          response.data.data.length = 3;
+        }
+
+        this.CommentList = response.data.data;
+      });
+    },
     handlerFollow() {
       if (this.articleDetail.has_follow) {
         this.$axios({
@@ -266,6 +277,11 @@ export default {
       text-align: center;
       line-height: 26/360 * 100vw;
       font-size: 14/360 * 100vw;
+      &.unfollow {
+        background-color: red;
+        color: white;
+        border: 1px solid red;
+      }
     }
   }
   .title {
@@ -325,27 +341,6 @@ export default {
   text-align: center;
   padding-bottom: 50/360 * 100vw;
   border-bottom: 1px solid #ccc;
-}
-.bottomTool {
-  display: flex;
-  align-items: center;
-  margin: 20/360 * 100vw;
-  .writeFollow {
-    // flex: 1;
-    width: 160/360 * 100vw;
-    height: 40/360 * 100vw;
-    padding-left: 15/360 * 100vw;
-    margin-right: 20/360 * 100vw;
-    border-radius: 20 /360 * 100vw;
-    background-color: #ccc;
-    line-height: 40/360 * 100vw;
-    font-size: 16/360 * 100vw;
-  }
-  .star {
-    margin: 0 20/360 * 100vw;
-  }
-  .iconfenxiang {
-    font-size: 8vw;
-  }
+  margin-bottom: 20/360 * 100vw;
 }
 </style>

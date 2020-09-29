@@ -8,9 +8,9 @@ import moment from "moment"
 moment.locale('zh-cn')
 
 // 挂载到全局中
-Vue.prototype.$moment = moment
+// Vue.prototype.$moment = moment
 
-
+// 全局过滤方法
 Vue.filter('formatTime', function (Oldvalue) {
   const time = moment(Oldvalue).format("YYYYMMDDHHmmss");
   const formatTime = moment(time, "YYYYMMDDhhmmss").fromNow();

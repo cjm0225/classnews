@@ -13,17 +13,24 @@
         <div class="username">{{ comment.user.nickname }}</div>
         <div class="time">{{ comment.create_date | formatTime }}</div>
       </div>
-      <div class="commentBtn">回复</div>
+      <div class="commentBtn" @click="reply">回复</div>
     </div>
     <div class="comment">{{ comment.content }}</div>
   </div>
 </template>
 
 <script>
+import eventBus from "../eventBus/index";
 export default {
   name: "comment",
   props: {
     comment: Object,
+  },
+  methods: {
+    reply() {
+      // console.log("click");
+      eventBus.$emit("reply", this.comment.id);
+    },
   },
 };
 </script>

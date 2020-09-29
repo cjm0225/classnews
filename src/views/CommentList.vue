@@ -25,6 +25,10 @@ export default {
   created() {
     this.$axios({
       url: "/post_comment/" + 1,
+      params: {
+        pageSize: 5,
+        pageIndex: 2,
+      },
     }).then((response) => {
       console.log(response.data.data);
       this.CommentList = response.data.data;
