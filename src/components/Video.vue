@@ -9,7 +9,24 @@
         @ended="endedhandler"
         @click="videoPlay"
       ></video>
-      <div class="controBar">
+      <div class="topBar" v-if="isControBarShow">
+        <van-icon
+          name="arrow-left"
+          class="topBarIcon"
+          @click="$router.back(1)"
+        />
+        <van-icon name="share-o" class="topBarIcon" @click="showShare" />
+      </div>
+
+      <!-- 不可以放在topBar中,因为在在视频播放的同时,两秒后会隐藏,会导致分享栏一起隐藏 -->
+      <van-share-sheet
+        v-model="isShowShare"
+        title="立即分享给好友"
+        :options="options"
+        @select="onSelect"
+      />
+
+      <div class="controBar" v-if="isControBarShow">
         <!-- 播放按钮 -->
         <div
           class="iconfont icon-ziyuan playBtn"
@@ -70,9 +87,20 @@ export default {
       isVideoPlay: false,
       isMuted: true,
       isShowFullScreen: true,
+      isControBarShow: true,
       videodurationTime: 0,
       currentTime: 0,
       videoElement: {},
+      timer: null,
+      isShowShare: false,
+      options: [
+        { name: "微信", icon: "wechat" },
+        { name: "微博", icon: "weibo" },
+        { name: "复制链接", icon: "link" },
+        { name: "分享海报", icon: "poster" },
+        { name: "二维码", icon: "qrcode" },
+        { name: "QQ", icon: "qq" },
+      ],
     };
   },
   created() {
@@ -80,6 +108,10 @@ export default {
   },
   mounted() {
     this.defaultMuted();
+  },
+  beforeDestroy() {
+    // 关闭视频播放的最后一个定时器
+    clearTimeout(this.timer);
   },
   filters: {
     // 获取正确的视频时间显示效果
@@ -114,7 +146,30 @@ export default {
     },
   },
   methods: {
-    // 默认关闭声音，提高用户体验
+    showShare() {
+      // question:在视频播放的同时,点击分享按钮会出现跟随工具栏一起隐藏的情况
+      // answer:不可以放在topBar元素中,因为在在视频播放的同时,两秒后会隐藏,会导致分享栏一起隐藏
+      //视频暂停，点击分享默认暂停视频
+      this.$refs.video.pause();
+      // 更新状态标记符号
+      this.isVideoPlay = false;
+      // 更新工具栏的状态标记符号
+      this.isControBarShow = true;
+      // 在视频播放的时候,两秒后会隐藏工具栏
+      // 在重复点击播放和暂停清空定时器可以防止出现工具栏在暂停的时候也隐藏的情况
+      clearTimeout(this.timer);
+
+      // 显示分享栏
+      this.isShowShare = true;
+    },
+    // 分享栏隐藏
+    onSelect(option) {
+      this.$toast(option.name);
+      // if (option.name === "微信") {
+      //   location.href = "weixin://dl/scan";
+      // }
+      this.isShowShare = false;
+    },
     defaultMuted() {
       this.$refs.video.muted = true;
     },
@@ -135,9 +190,25 @@ export default {
       if (this.isVideoPlay === false) {
         this.$refs.video.play();
         this.isVideoPlay = true;
+
+        // 两秒后,隐藏工具栏
+        // question:在高频点击之后会出现工具栏会瞬间隐藏的情况
+        // answer:可以用防抖动debounce来解决,可以限制事件的间隔事件
+        // 默认关闭声音，提高用户体验
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.isControBarShow = false;
+        }, 2000);
       } else {
+        //视频暂停
         this.$refs.video.pause();
+        // 更新状态标记符号
         this.isVideoPlay = false;
+        // 更新工具栏的状态标记符号
+        this.isControBarShow = true;
+        // 在视频播放的时候,两秒后会隐藏工具栏
+        // 在重复点击播放和暂停清空定时器可以防止出现工具栏在暂停的时候也隐藏的情况
+        clearTimeout(this.timer);
       }
     },
     // 音量按钮控制
@@ -162,11 +233,20 @@ export default {
     //拖拉进度条开始时,默认停止视屏
     dragstarthandler() {
       this.$refs.video.pause();
+      this.isControBarShow = true;
     },
     // 拖拉进度条结束时,默认播放视屏
     dragendhandler() {
       this.$refs.video.play();
       this.isVideoPlay = true;
+      // 更新工具栏的状态标记符号
+      this.isControBarShow = true;
+
+      // 两秒后，隐藏工具栏
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        this.isControBarShow = false;
+      }, 2000);
     },
     // 播放结束后,初始化播放进度
     endedhandler() {
@@ -229,6 +309,19 @@ export default {
     video {
       width: 100%;
       height: 203/360 * 100vw;
+    }
+    .topBar {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      font-size: 24/360 * 100vw;
+
+      .topBarIcon {
+        margin: 10/360 * 100vw;
+        color: #ffffffeb;
+      }
     }
     .controBar {
       display: flex;

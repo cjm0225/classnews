@@ -1,273 +1,36 @@
 <template>
-  <div class="video-main">
-    <div class="videoBox">
-      <video
-        src="https://video.pearvideo.com/mp4/adshort/20200927/cont-1699344-15404736_adpkg-ad_hd.mp4"
-        ref="video"
-        poster="../assets/logo.png"
-        @loadedmetadata="loadedmetadata"
-        @timeupdate="timeupdatehandler"
-        @ended="endedhandler"
-        @click="videoPlay"
-      ></video>
-      <div class="controBar">
-        <!-- 播放按钮 -->
-        <div
-          class="iconfont icon-ziyuan playBtn"
-          @click="playBtnhandler"
-          v-if="!isVideoPlay"
-        ></div>
-        <div
-          class="iconfont icon-bofangzhong playBtn"
-          @click="playBtnhandler"
-          v-else
-        ></div>
-        <div class="videotime">
-          {{ currentTime | timeCamp }}/{{ videodurationTime | timeCamp }}
-        </div>
-        <!-- 进度条 -->
-        <van-slider
-          v-model="value"
-          @change="onChange"
-          button-size="16px"
-          @drag-end="dragendhandler"
-          @drag-start="dragstarthandler"
-        />
-        <!-- 静音按钮 -->
-        <div
-          class="iconfont icon-shengyin volumeBtn"
-          v-if="!isMuted"
-          @click="volumeBtnHandler"
-        ></div>
-        <div
-          class="iconfont icon-ziyuan1 volumeBtn"
-          v-else
-          @click="volumeBtnHandler"
-        ></div>
-        <!-- 全屏按钮 -->
-        <div
-          class="iconfont icon-quanping"
-          @click="fullScreen"
-          v-if="isShowFullScreen"
-        ></div>
-        <div
-          class="iconfont icon-tuichuquanping"
-          @click="ExitfullScreen"
-          v-else
-        ></div>
-      </div>
-    </div>
-  </div>
+  <van-slider
+    class="verticalSlider"
+    vertical
+    v-model="value"
+    button-size="20px"
+    active-color="#e5e5e5"
+    inactive-color="#1989fa"
+    @change="onChange"
+  />
 </template>
 
 <script>
 export default {
-  props: {
-    src: String,
-  },
   data() {
     return {
-      value: 0,
-      isVideoPlay: false,
-      isMuted: true,
-      isShowFullScreen: true,
-      videodurationTime: 0,
-      currentTime: 0,
+      value: 100,
     };
   },
-  created() {
-    this.loadedmetadata();
-  },
-  mounted() {
-    this.defaultMuted();
-  },
-  filters: {
-    // 获取正确的视频时间显示效果
-    timeCamp(oldValue) {
-      // 1000秒
-      // 1000 / 60 是等于16.66666666分钟 取整 得出16分钟 需要分钟显示
-      // 1000 / 60 / 60 是等于 0.2777777777小时 取整等于0,所以不需要小时来显示
-      // 剩下的来显示秒数
-      let hour = parseInt(oldValue / 60 / 60);
-
-      let minute = parseInt((oldValue - hour * 3600) / 60);
-
-      let second = parseInt(oldValue - hour * 60 * 60 - minute * 60);
-
-      if (hour < 10) {
-        hour = `0${hour}`;
-      }
-
-      if (minute < 10) {
-        minute = `0${minute}`;
-      }
-
-      if (second < 10) {
-        second = `0${second}`;
-      }
-
-      if (hour === "00") {
-        return `${minute}:${second}`;
-      } else {
-        return `${hour}:${minute}:${second}`;
-      }
-    },
-  },
   methods: {
-    // 默认关闭声音，提高用户体验
-    defaultMuted() {
-      this.$refs.video.muted = true;
-    },
-    // 在视频源加载完成后,获取视频源的播放时长
-    loadedmetadata(videoInfo) {
-      if (videoInfo) {
-        // videoInfo.target.duration是视屏的时间
-        this.videodurationTime = videoInfo.target.duration;
-      }
-    },
-    //在进度条的值发生改变时，通知视频播放时间改变，currentTime是视频的属性，可以改变现有播放时间
     onChange(value) {
-      this.currentTime = this.videodurationTime * (value / 100);
-      this.$refs.video.currentTime = this.currentTime;
-    },
-    // 播放按钮控制
-    playBtnhandler() {
-      if (this.isVideoPlay === false) {
-        this.$refs.video.play();
-        this.isVideoPlay = true;
-      } else {
-        this.$refs.video.pause();
-        this.isVideoPlay = false;
-      }
-    },
-    // 音量按钮控制
-    volumeBtnHandler() {
-      if (this.isMuted === true) {
-        this.isMuted = false;
-        this.$refs.video.muted = false;
-      } else {
-        this.isMuted = true;
-        this.$refs.video.muted = true;
-      }
-    },
-    // 在播放时间发生改变时,通知事件数据改变
-    timeupdatehandler(videoInfo) {
-      // 时间进度
-      this.currentTime = parseInt(videoInfo.target.currentTime);
-      // 更新下面进度条,但是进度条是以百分比显示,需要处理数据
-      this.value = parseInt(
-        (parseInt(videoInfo.target.currentTime) / this.videodurationTime) * 100
-      );
-    },
-    //拖拉进度条开始时,默认停止视屏
-    dragstarthandler() {
-      this.$refs.video.pause();
-      this.isVideoPlay = false;
-    },
-    // 拖拉进度条结束时,默认播放视屏
-    dragendhandler() {
-      this.$refs.video.play();
-      this.isVideoPlay = true;
-    },
-    // 播放结束后,初始化播放进度
-    endedhandler() {
-      this.$refs.video.currentTime = 0;
-      this.isVideoPlay = false;
-    },
-    // 全屏播放
-    fullScreen() {
-      // webkit引擎浏览器全屏,google safari浏览器
-      this.$refs.video.webkitRequestFullScreen &&
-        this.$refs.video.webkitRequestFullScreen();
-      // 火狐浏览器
-      this.$refs.video.mozRequestFullScreen &&
-        this.$refs.video.mozRequestFullScreen();
-
-      // IE浏览器
-      this.$refs.video.msRequestFullscreen &&
-        this.$refs.video.msRequestFullscreen();
-
-      // opera浏览器
-      this.$refs.video.oRequestFullscreen &&
-        this.$refs.video.oRequestFullscreen();
-
-      // 退出全屏图标显示
-      // this.isShowFullScreen = false;
-    },
-    // 退出全屏
-    // ExitfullScreen() {
-    //   // webkit引擎浏览器全屏,google safari浏览器
-    //   this.$refs.video.webkitRequestFullScreen &&
-    //     this.$refs.video.webkitRequestFullScreen();
-
-    //   // 火狐浏览器
-    //   this.$refs.video.mozRequestFullScreen &&
-    //     this.$refs.video.mozRequestFullScreen();
-
-    //   // IE浏览器
-    //   this.$refs.video.msRequestFullscreen &&
-    //     this.$refs.video.msRequestFullscreen();
-
-    //   // opera浏览器
-    //   this.$refs.video.oRequestFullscreen &&
-    //     this.$refs.video.oRequestFullscreen();
-
-    //   // 全屏图标显示
-    //   this.isShowFullScreen = true;
-    // },
-
-    // 点击视频元素,控制视频播放状态
-    videoPlay() {
-      this.playBtnhandler();
+      console.log(100 - value);
     },
   },
 };
 </script>
 
-<style lang="less" scoped>
-video {
-  box-sizing: border-box;
-  width: 100%;
-  height: 250/360 * 100vw;
-}
-.video-main {
-  .videoBox {
-    position: relative;
-    video {
-      width: 100%;
-      height: 250/360 * 100vw;
-    }
-    .controBar {
-      display: flex;
-      align-items: center;
-      position: absolute;
-      padding: 0 10/360 * 100vw;
-      bottom: 0;
-      width: 100%;
-      box-sizing: border-box;
-      height: 50/360 * 100vw;
-      background-color: #0000007a;
-      color: #ffffffeb;
 
-      .playBtn {
-        font-size: 30/360 * 100vw;
-      }
-      .videotime {
-        margin-left: 10/360 * 100vw;
-        margin-right: 20/360 * 100vw;
-        color: #ffffffb8;
-      }
-      /deep/.van-slider {
-        width: 150/360 * 100vw;
-      }
-      .volumeBtn {
-        font-size: 20/360 * 100vw;
-        margin: 0 10/360 * 100vw 0 15/360 * 100vw;
-      }
-      .icon-quanping {
-        font-size: 30/360 * 100vw;
-      }
-    }
-  }
+<style lang="less" scoped>
+.verticalSlider {
+  margin: 50/360 * 100vw;
+  width: 5/360 * 100vw;
+  height: 150/360 * 100vw;
+  // transform: rotate(-180deg);
 }
 </style>

@@ -93,6 +93,7 @@
     <bottomTool
       :articleId="$route.params.id"
       @loadComment="loadComment"
+      :CommentList="CommentList"
     ></bottomTool>
   </div>
 </template>

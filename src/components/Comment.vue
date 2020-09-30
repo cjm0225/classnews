@@ -28,7 +28,6 @@ export default {
   },
   methods: {
     reply() {
-      // console.log("click");
       eventBus.$emit("reply", this.comment.id);
     },
   },
