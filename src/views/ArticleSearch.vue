@@ -1,43 +1,134 @@
 <template>
   <div class="content">
-    <TopNav title="搜索" class="topnav" @pushPage="pushPage">
-      <div class="search">
-        <div class="iconfont iconsearch">
-          <span>通灵兽消失术</span>
-        </div>
-      </div>
+    <TopNav title="搜索" class="topnav" @pushPage="pushPage" @search="search">
+      <input
+        type="text"
+        placeholder="请输入要搜索的新闻关键词"
+        class="input"
+        v-model="keyword"
+      />
     </TopNav>
 
-    <!-- 历史记录 -->
-    <div class="historySection">
-      <h3>历史记录</h3>
-      <div class="historyList">
-        <div class="history">美女</div>
+    <!-- 总共有三种显示情况 -->
+    <!-- 
+      第一:页面初始状态
+      第二:显示文章状态
+      第三:空状态
+     -->
+
+    <div v-show="initpage">
+      <!-- 历史记录 -->
+      <div class="historySection">
+        <h3>历史记录</h3>
+        <div class="historyList">
+          <div
+            class="history"
+            v-for="(keyword, index) of searchHistory"
+            :key="index"
+            @click="historySearch(keyword)"
+          >
+            {{ keyword }}
+          </div>
+        </div>
+      </div>
+
+      <!-- 热门搜索 -->
+      <div class="hotSearch">
+        <h3>热门搜索</h3>
+        <div class="hotSearchList">
+          <div class="hot">热门搜索</div>
+          <div class="hot">热门搜索</div>
+          <div class="hot">热门搜索</div>
+          <div class="hot">热门搜索</div>
+        </div>
       </div>
     </div>
 
-    <!-- 热门搜索 -->
-    <div class="hotSearch">
-      <h3>热门搜索</h3>
-      <div class="hotSearchList">
-        <div class="hot">办公室小野否认解散</div>
-        <div class="hot">月季如何嫁接</div>
-        <div class="hot">办公室小野否认解散</div>
-        <div class="hot">月季如何嫁接</div>
-      </div>
+    <div v-show="hasArticle">
+      <TypeNewShow
+        v-for="news of articleList"
+        :key="news.id"
+        :categoryNews="news"
+      ></TypeNewShow>
+    </div>
+
+    <div v-show="emptyArticle">
+      <van-empty description="该关键词没有新闻,请重新搜索" />
     </div>
   </div>
 </template>
 
 <script>
 import TopNav from "../components/TopNav";
+import TypeNewShow from "../components/TypeNewShow";
 export default {
+  data() {
+    return {
+      keyword: "",
+      searchHistory: [],
+      articleList: [],
+      hasArticle: false,
+      emptyArticle: false,
+      initpage: true,
+    };
+  },
   components: {
     TopNav,
+    TypeNewShow,
+  },
+  created() {
+    if (localStorage.getItem("history")) {
+      this.searchHistory = JSON.parse(localStorage.getItem("history"));
+    }
   },
   methods: {
     pushPage() {
+      if (this.emptyArticle) {
+        this.hasArticle = false;
+        this.emptyArticle = false;
+        this.initpage = true;
+
+        this.keyword = "";
+        return;
+      }
+
+      if (this.hasArticle) {
+        this.hasArticle = false;
+        this.emptyArticle = false;
+        this.initpage = true;
+
+        this.keyword = "";
+        return;
+      }
+
       this.$router.push("/home");
+    },
+    search() {
+      if (!this.searchHistory.includes(this.keyword)) {
+        this.searchHistory.push(this.keyword);
+        localStorage.setItem("history", JSON.stringify(this.searchHistory));
+      }
+
+      this.$axios({
+        url: "/post_search",
+        params: {
+          keyword: this.keyword,
+        },
+      }).then((response) => {
+        this.articleList = response.data.data;
+        if (this.articleList.length > 0) {
+          this.hasArticle = true;
+          this.emptyArticle = false;
+          this.initpage = false;
+        } else {
+          this.hasArticle = false;
+          this.emptyArticle = true;
+          this.initpage = false;
+        }
+      });
+    },
+    historySearch(keyword) {
+      this.keyword = keyword;
     },
   },
 };
@@ -47,7 +138,7 @@ export default {
 .topnav {
   display: flex;
   align-items: center;
-  .search {
+  .input {
     margin: 0 8/360 * 100vw;
     box-sizing: border-box;
     border: 1px solid #ccc;
@@ -55,20 +146,20 @@ export default {
     height: 30/360 * 100vw;
     padding-left: 10/360 * 100vw;
     border-radius: 15/360 * 100vw;
-    .iconsearch {
-      color: #cccccc;
-      line-height: 30/360 * 100vw;
-      span {
-        color: black;
-        margin-left: 10/360 * 100vw;
-      }
-    }
   }
 }
 .historySection {
   margin: 0 20/360 * 100vw;
   padding-bottom: 20/360 * 100vw;
   border-bottom: 1px solid #ccc;
+  .historyList {
+    display: flex;
+    flex-wrap: wrap;
+    .history {
+      padding-right: 20/360 * 100vw;
+      margin-top: 15/360 * 100vw;
+    }
+  }
 }
 .hotSearch {
   margin: 0 20/360 * 100vw;

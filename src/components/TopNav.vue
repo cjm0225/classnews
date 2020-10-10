@@ -2,7 +2,7 @@
   <div class="navWrapper">
     <span class="iconfont iconjiantou2" @click="clickhandler"></span>
     <slot></slot>
-    <div class="title">{{title}}</div>
+    <div class="title" @click="search">{{ title }}</div>
   </div>
 </template>
 
@@ -13,12 +13,10 @@ export default {
   },
   methods: {
     clickhandler() {
-      // if (this.title === "栏目管理") {
-      //   this.$router.push("/home");
-      // } else {
-      //   this.$router.push("/personal");
-      // }
       this.$emit("pushPage");
+    },
+    search() {
+      this.$emit("search");
     },
   },
 };
