@@ -53,12 +53,10 @@ export default {
   methods: {
     // 加载全部新闻标题需要复用
     loadTitle() {
-      this.$axios({
-        url: "/category",
-      }).then((response) => {
-        // 需要改造数据来给数据增加字段,而又可以让新增加的字段页被vue监听
-        // 在数组的map函数加工每一个数组里面的对象之后返回一个新数组，赋值给已经初始化的数组中
-        this.titleList = response.data.data.map((item) => {
+      // 如果是已经登录过了,那就按照存储记录来显示
+      if (localStorage.getItem("categoryList")) {
+        const titleList = JSON.parse(localStorage.getItem("categoryList"));
+        this.titleList = titleList.map((item) => {
           return {
             // 扩展运算符,把对象展开并赋值给新对象
             ...item,
@@ -80,7 +78,36 @@ export default {
 
         // 给对应下标的对象数组赋值
         this.loadPage();
-      });
+      } else {
+        this.$axios({
+          url: "/category",
+        }).then((response) => {
+          // 需要改造数据来给数据增加字段,而又可以让新增加的字段页被vue监听
+          // 在数组的map函数加工每一个数组里面的对象之后返回一个新数组，赋值给已经初始化的数组中
+          this.titleList = response.data.data.map((item) => {
+            return {
+              // 扩展运算符,把对象展开并赋值给新对象
+              ...item,
+              // 在对象中初始化
+              newsList: [],
+              // 因为每一个新闻标题的新闻内容都不一样,页数和新闻总数都不一样
+              // 而每一个标题的新闻内容都是一个子页面显示,需要有不同的页码记录显示到多少内容,所以需要在每一个对象中保存响应的页码.并记录下来
+              // 默认为每页显示5条新闻内容
+              pageSize: 5,
+              // 默认从第一页开始
+              pageIndex: 1,
+
+              //vant list列表组件loading表示loading事件状态,finished表示onload事件是否能够被触发
+              // 每一次onload事件被触发都会将loading重新赋值为true,表示数据加载状态
+              loading: false,
+              finished: false,
+            };
+          });
+
+          // 给对应下标的对象数组赋值
+          this.loadPage();
+        });
+      }
     },
     // 因为加载新闻内容的代码需要重复使用,所以需要封装一个方法来复用
     loadPage() {

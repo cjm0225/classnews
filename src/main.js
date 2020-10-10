@@ -2,20 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from './axios'
-import moment from "moment"
+import moment from "../src/filter"
 
-// 先修改为中文显示
-moment.locale('zh-cn')
-
-// 挂载到全局中
-// Vue.prototype.$moment = moment
-
-// 全局过滤方法
-Vue.filter('formatTime', function (Oldvalue) {
-  const time = moment(Oldvalue).format("YYYYMMDDHHmmss");
-  const formatTime = moment(time, "YYYYMMDDhhmmss").fromNow();
-  return formatTime;
-});
 
 Vue.config.productionTip = false
 
@@ -29,5 +17,6 @@ new Vue({
   el: "#app",
   router,
   axios,
+  moment,
   render: function (h) { return h(App) }
 })

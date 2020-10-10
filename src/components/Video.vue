@@ -84,14 +84,21 @@ export default {
   data() {
     return {
       value: 0,
+      // 默认视频不自动播放
       isVideoPlay: false,
+      // 默认静音
       isMuted: true,
+      // 默认显示全屏按钮
       isShowFullScreen: true,
+      // 默认显示工具栏
       isControBarShow: true,
+      // 视频总长时间
       videodurationTime: 0,
+      // 视频播放时间
       currentTime: 0,
-      videoElement: {},
+      // 定时器id
       timer: null,
+      // 分享按钮
       isShowShare: false,
       options: [
         { name: "微信", icon: "wechat" },
@@ -165,9 +172,9 @@ export default {
     // 分享栏隐藏
     onSelect(option) {
       this.$toast(option.name);
-      // if (option.name === "微信") {
-      //   location.href = "weixin://dl/scan";
-      // }
+      if (option.name === "微信") {
+        location.href = "weixin://dl/scan";
+      }
       this.isShowShare = false;
     },
     defaultMuted() {
@@ -182,6 +189,7 @@ export default {
     },
     //在进度条的值发生改变时，通知视频播放时间改变，currentTime是视频的属性，可以改变现有播放时间
     onChange(value) {
+      // 进度条是以百分比显示的,所以在进度条改变的时候可以利用百分比来计算出当前进度条和当前播放时间的关系,从而得出视频播放视频
       this.currentTime = this.videodurationTime * (value / 100);
       this.$refs.video.currentTime = this.currentTime;
     },

@@ -39,7 +39,6 @@ export default {
     CommentList: Array,
   },
   created() {
-    console.log(this.CommentList);
     // 方法一:
     // 由于created钩子函数,是在组件创建时触发,在事件总线中,每一次组件的创建都会绑定一个reply事件,会导致多次绑定事件的情况出现
     //所以需要在组件创建绑定之前,就需要把这个reply事件解绑,这样就可以只绑定一个reply事件了
@@ -59,24 +58,6 @@ export default {
     // 方法二:beforeDestroy()钩子函数中解绑,一般会在这里清除全局事件和全局定时器
     // 注意:事件总线的事件在组件创建之后被绑定,而回调函数只在兄弟组件触发$emit之后才会触发,所以数据在事件绑定的时候也只是初始值,正确的数据只在$emit触发之后才会有
     eventBus.$off("reply");
-
-    // 一次性清理所有定时器,
-    // 方法一:可以设定一个循环来清除1000id以下的定时器,要是定时器id远少于1000会导致不必要的浪费.另外,循环执行效率很低
-    // 方法二:可以在清除之前创建一个空的定时器,并返回id,这样就可以确定定时器最后的id是多少,后面就是删除比空定时器id少的所有定时器就可以了,方法更优化
-    (function () {
-      // 每轮事件循环检查一次
-      var gid = setInterval(clearAllTimeouts, 0);
-
-      function clearAllTimeouts() {
-        var id = setTimeout(function () {}, 0);
-        while (id > 0) {
-          if (id !== gid) {
-            clearTimeout(id);
-          }
-          id--;
-        }
-      }
-    })();
   },
   methods: {
     sendReply(commentId) {

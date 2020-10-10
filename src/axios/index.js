@@ -5,8 +5,10 @@ import { Toast } from 'vant';
 
 Vue.use(Toast);
 
+// 将axios挂载到全局中
 Vue.prototype.$axios = axios
 
+// 设置默认服务器，在ajax请求中会自动加上协议，域名，端口
 axios.defaults.baseURL = "http://127.0.0.1:3000"
 
 

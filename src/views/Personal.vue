@@ -92,7 +92,7 @@ export default {
       this.$router.push("/collectionList");
     },
     CommentPage() {
-      // this.$router.push("/commentList");
+      this.$router.push("/commentList");
     },
   },
 };
