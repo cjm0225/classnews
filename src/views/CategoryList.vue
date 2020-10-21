@@ -48,7 +48,7 @@ export default {
       }
 
       // 考虑到栏目必须有关注和热点栏目,所以不能删除
-      if (category.name === "关注" || category.name === "热点") {
+      if (category.name === "关注" || category.name === "头条") {
         this.$toast.fail("不能删除该栏目");
         return;
       }

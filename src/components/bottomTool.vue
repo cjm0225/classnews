@@ -6,7 +6,13 @@
       <div class="writeFollow" @click="showTextarea">
         {{ textareaValue ? textareaValue : "写跟帖" }}
       </div>
-      <van-icon name="chat-o" badge="99+" size="8vw" />
+      <van-icon
+        name="chat-o"
+        badge="99+"
+        size="8vw"
+        v-if="CommentListLength >= 99"
+      />
+      <van-icon name="chat-o" :badge="CommentListLength" size="8vw" />
       <van-icon name="star-o" size="8vw" class="star" />
       <div class="iconfont iconfenxiang"></div>
     </div>
@@ -25,7 +31,8 @@
 </template>
 
 <script>
-import eventBus from "../eventBus/index";
+import eventBus from "../eventBus";
+import LoginVue from "../views/Login.vue";
 export default {
   data() {
     return {
@@ -37,6 +44,7 @@ export default {
   props: {
     articleId: String,
     CommentList: Array,
+    CommentListLength: Number,
   },
   created() {
     // 方法一:
@@ -57,7 +65,7 @@ export default {
   beforeDestroy() {
     // 方法二:beforeDestroy()钩子函数中解绑,一般会在这里清除全局事件和全局定时器
     // 注意:事件总线的事件在组件创建之后被绑定,而回调函数只在兄弟组件触发$emit之后才会触发,所以数据在事件绑定的时候也只是初始值,正确的数据只在$emit触发之后才会有
-    eventBus.$off("reply");
+    eventBus.$off();
   },
   methods: {
     sendReply(commentId) {
@@ -113,6 +121,10 @@ export default {
           this.textareaValue = "";
           // 通知父组件更新数据
           this.$emit("loadComment");
+          // 提示评论成功
+          this.$toast.success(response.data.message);
+          // 通知父组件数组更新
+          this.$emit("newLength");
         }
       });
     },

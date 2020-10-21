@@ -104,9 +104,16 @@ export default {
       this.$router.push("/home");
     },
     search() {
+      // 如果搜索词已存在,就不新增在关键词数组中
       if (!this.searchHistory.includes(this.keyword)) {
         this.searchHistory.push(this.keyword);
         localStorage.setItem("history", JSON.stringify(this.searchHistory));
+      }
+
+      // 如果搜索词为空,则提示
+      if (this.keyword === "") {
+        this.$toast.fail("关键词不能为空");
+        return;
       }
 
       this.$axios({

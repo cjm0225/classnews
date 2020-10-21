@@ -52,6 +52,7 @@
         </div>
       </div>
     </div>
+
     <div class="bottom">
       <!-- 点赞按钮 -->
       <div
@@ -76,7 +77,7 @@
     <div class="commentWrapper">
       <h2>精彩跟帖</h2>
       <Comment
-        v-for="comment of CommentList"
+        v-for="comment of lessCommentList"
         :key="comment.id"
         :comment="comment"
       ></Comment>
@@ -94,6 +95,8 @@
       :articleId="$route.params.id"
       @loadComment="loadComment"
       :CommentList="CommentList"
+      :CommentListLength="CommentListLength"
+      @newLength="newlengthHandler"
     ></bottomTool>
   </div>
 </template>
@@ -107,8 +110,11 @@ export default {
     return {
       articleDetail: [],
       CommentList: [],
+      CommentListLength: "",
+      lessCommentList: [],
     };
   },
+
   components: {
     Comment,
     Video,
@@ -122,10 +128,16 @@ export default {
       this.articleDetail = response.data.data;
     });
 
+    // 获取真实的评论数量
+    this.CommentListLength = Number(this.$route.params.length);
+
     //  获取评论
     this.loadComment();
   },
   methods: {
+    newlengthHandler() {
+      this.CommentListLength += 1;
+    },
     loadComment() {
       // 获取评论
       this.$axios({
@@ -133,9 +145,12 @@ export default {
       }).then((response) => {
         // 数组的长度代表评论的数量,所以可以使用数组的长度来控制评论的数量显示
         if (response.data.data.length > 3) {
-          response.data.data.length = 3;
-        }
+          this.CommentListLength = response.data.data.length;
 
+          this.lessCommentList = response.data.data.slice(0, 3);
+        } else {
+          this.lessCommentList = response.data.data;
+        }
         this.CommentList = response.data.data;
       });
     },
@@ -310,10 +325,12 @@ export default {
   }
   .icondianzan {
     margin-right: 5 /360 * 100vw;
+    font-size: 14px;
   }
   .iconweixin {
     margin-right: 5 /360 * 100vw;
     color: #0a0;
+    font-size: 14px;
   }
 }
 .commentWrapper {

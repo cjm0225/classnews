@@ -101,7 +101,7 @@ const routes = [
     component: ArticleSearch
   },
   {
-    path: "/articledetail/:id",
+    path: "/articledetail/:id/:length",
     component: ArticleDetail
 
   },

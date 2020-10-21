@@ -56,6 +56,20 @@ export default {
       // 如果是已经登录过了,那就按照存储记录来显示
       if (localStorage.getItem("categoryList")) {
         const titleList = JSON.parse(localStorage.getItem("categoryList"));
+
+        // 如果不是登录状态下,就不显示关注栏目
+        if (!localStorage.getItem("token")) {
+          for (let index = 0; index < titleList.length; index++) {
+            if (titleList[index].name === "关注") {
+              titleList.splice(index, 1);
+              index--;
+            }
+          }
+        }
+
+        // 给tab栏增加一个+号,操作栏目管理
+        titleList.push({ name: "+" });
+
         this.titleList = titleList.map((item) => {
           return {
             // 扩展运算符,把对象展开并赋值给新对象
@@ -84,6 +98,7 @@ export default {
         }).then((response) => {
           // 需要改造数据来给数据增加字段,而又可以让新增加的字段页被vue监听
           // 在数组的map函数加工每一个数组里面的对象之后返回一个新数组，赋值给已经初始化的数组中
+
           this.titleList = response.data.data.map((item) => {
             return {
               // 扩展运算符,把对象展开并赋值给新对象
@@ -104,6 +119,10 @@ export default {
             };
           });
 
+          // 给tab栏增加一个+号,操作栏目管理
+          this.titleList.push({
+            name: "+",
+          });
           // 给对应下标的对象数组赋值
           this.loadPage();
         });
@@ -175,5 +194,14 @@ export default {
 <style lang="less" scoped>
 /deep/ .van-tab {
   font-size: 18/360 * 100vw;
+  // &:nth-last-child(2) {
+  //   background-color: #fff;
+  //   position: sticky;
+  //   right: -8px;
+  //   line-height: 44px;
+  //   width: 44px;
+  //   font-size: 18/360 * 100vw;
+  //   font-weight: 700;
+  // }
 }
 </style>

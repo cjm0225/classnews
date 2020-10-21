@@ -1,5 +1,5 @@
 <template>
-  <div class="news" @click="$router.push('/articledetail/' + categoryNews.id)">
+  <div class="news" @click="toArtilceDetail">
     <!-- 显示类型为1,但图片只有一张的新闻 -->
     <div v-if="categoryNews.type === 1 && categoryNews.cover.length === 1">
       <div class="typeOne">
@@ -16,7 +16,11 @@
           </div>
         </div>
         <div class="right">
-          <img :src="categoryNews.cover[0].url" />
+          <img
+            :src="$axios.defaults.baseURL + categoryNews.cover[0].url"
+            v-if="categoryNews.cover[0].url.indexOf('http') === -1"
+          />
+          <img :src="categoryNews.cover[0].url" v-else />
         </div>
       </div>
     </div>
@@ -72,6 +76,16 @@
 export default {
   props: {
     categoryNews: Object,
+  },
+  methods: {
+    toArtilceDetail() {
+      this.$router.push(
+        "/articledetail/" +
+          this.categoryNews.id +
+          "/" +
+          this.categoryNews.comment_length
+      );
+    },
   },
 };
 </script>

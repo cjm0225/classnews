@@ -5,7 +5,7 @@
 
     <div class="commentInfo">
       <img
-        :src="$axios.default.baseURL + comment.user.head_img"
+        :src="$axios.defaults.baseURL + comment.user.head_img"
         v-if="comment.user.head_img"
       />
       <img src="../assets/logo.png" v-else />

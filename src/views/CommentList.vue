@@ -15,7 +15,9 @@
         <div class="mainComment">
           {{ comment.content }}
         </div>
-        <div class="originPost">原文: {{ comment.post.title }}</div>
+        <div class="originPost" @click="originText(comment.post.id)">
+          原文: {{ comment.post.title }}
+        </div>
       </div>
     </div>
   </div>
@@ -38,13 +40,16 @@ export default {
     this.$axios({
       url: "/user_comments",
     }).then((response) => {
-      console.log(response.data.data);
       this.CommentList = response.data.data;
     });
   },
   methods: {
     pushPage() {
       this.$router.push("/personal");
+    },
+    originText(id) {
+      // 跳转到文章详情页
+      this.$router.push("/articledetail/" + id);
     },
   },
 };
